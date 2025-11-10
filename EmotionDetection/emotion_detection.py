@@ -21,8 +21,12 @@ def emotion_detector(text_to_analyse: str):
 
     body = {"raw_document": { "text": text_to_analyse}}
     response = requests.post(API, json=body, headers=MODEL)
-    if response.status_code != 200:
-        return None
+    if response.status_code == 400:
+        output = {}
+        for key in KNOWN_EMOTIONS:
+            output[key] = None
+            output['dominant_emotion'] = None
+        return output
     emotion_predictions = json.loads(response.text)
     return extract_emotions(emotion_predictions)
 
